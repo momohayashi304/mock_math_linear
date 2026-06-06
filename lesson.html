@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1次関数とみなすこと シミュレーター</title>
+    <title>数学科指導法１ 模擬授業シミュレーター</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -15,6 +15,71 @@
             padding: 20px;
         }
 
+        /* --- 共通：外側タブ --- */
+        .outer-shell {
+            max-width: 1100px;
+            margin: 0 auto 18px auto;
+            background: #fff;
+            padding: 16px 20px 0 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .outer-title {
+            text-align: center;
+            font-size: 1.05rem;
+            color: #475569;
+            margin: 0 0 10px 0;
+            letter-spacing: 0.05em;
+        }
+
+        .outer-title strong {
+            color: #0f172a;
+            font-size: 1.2rem;
+        }
+
+        .outer-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            border-bottom: 3px solid #0f172a;
+        }
+
+        .outer-tab-btn {
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-bottom: none;
+            padding: 12px 28px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            color: #475569;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+        }
+
+        .outer-tab-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .outer-tab-btn.active {
+            background: #0f172a;
+            color: #fff;
+            border-color: #0f172a;
+        }
+
+        .unit-panel {
+            display: none;
+        }
+
+        .unit-panel.active {
+            display: block;
+        }
+
+        /* ===================================================== */
+        /* === 一次関数ユニット (Linear functions) ============= */
+        /* ===================================================== */
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -24,7 +89,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* タブのスタイル */
+        /* 内側タブのスタイル */
         .tabs {
             display: flex;
             justify-content: center;
@@ -88,7 +153,6 @@
             flex-direction: column;
         }
 
-        /* 観測データの表 */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -108,7 +172,6 @@
             color: white;
         }
 
-        /* 数式の表示 */
         .formula-box {
             background: #e8f4f8;
             padding: 15px;
@@ -121,7 +184,6 @@
             color: #2980b9;
         }
 
-        /* コントロールパネル */
         .controls {
             display: grid;
             gap: 15px;
@@ -157,7 +219,6 @@
             font-size: 1.1rem;
         }
 
-        /* 予測エリア */
         .prediction-box {
             background: #fff3e0;
             padding: 15px;
@@ -210,61 +271,364 @@
             padding: 10px;
             background: white;
         }
+
+        /* ===================================================== */
+        /* === 平方根ユニット (Square roots) =================== */
+        /* ===================================================== */
+        .sqrt-app {
+            font-family: "UD Digi Kyokasho N-R", "UD デジタル 教科書体 N-R", "Hiragino Kaku Gothic ProN", sans-serif;
+            color: #334155;
+            text-align: center;
+        }
+
+        .sqrt-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .sqrt-app h2.sqrt-title {
+            font-size: 1.4rem;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .sqrt-app p.subtitle {
+            color: #64748b;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .sqrt-app .data-panel {
+            display: flex;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .sqrt-app .data-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px dashed #cbd5e1;
+        }
+
+        .sqrt-app .data-box:last-child {
+            border-right: none;
+            background: #fff1f2;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .sqrt-app .data-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .sqrt-app .formula {
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 1rem;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .sqrt-app .value {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #0f172a;
+        }
+
+        .sqrt-app .is-int {
+            color: #16a34a !important;
+            font-size: 1.5rem;
+        }
+
+        .sqrt-app .sliders-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .sqrt-app .slider-box {
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sqrt-app .slider-box.x-axis {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .sqrt-app .slider-box.y-axis {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+
+        .sqrt-app .slider-box label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .sqrt-app input[type="range"] {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+        }
+
+        .sqrt-app #slider-x {
+            accent-color: #3b82f6;
+        }
+
+        .sqrt-app #slider-y {
+            accent-color: #10b981;
+        }
+
+        .sqrt-app .canvas-container {
+            position: relative;
+            width: 100%;
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .sqrt-app svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .sqrt-app #result-message {
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sqrt-app .success {
+            display: flex !important;
+            background-color: #dcfce7;
+            color: #166534;
+            border: 2px solid #22c55e;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sqrt-app .super-success {
+            display: flex !important;
+            background-color: #fef08a;
+            color: #854d0e;
+            border: 2px solid #eab308;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sqrt-app #unlock-btn {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .sqrt-app #unlock-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .sqrt-app #unlock-btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <!-- タブ切り替え -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('altitude', this)">標高と気温</button>
-            <button class="tab-btn" onclick="switchTab('car', this)">車と距離</button>
-            <button class="tab-btn" onclick="switchTab('candle', this)">線香と長さ</button>
+    <!-- =============================================== -->
+    <!-- 上部：単元切り替えタブ                           -->
+    <!-- =============================================== -->
+    <div class="outer-shell">
+        <p class="outer-title"><strong>数学科指導法１</strong> ／ 模擬授業シミュレーター</p>
+        <div class="outer-tabs">
+            <button class="outer-tab-btn active" id="outer-tab-linear" onclick="switchUnit('linear', this)">一次関数（中2）</button>
+            <button class="outer-tab-btn" id="outer-tab-sqrt" onclick="switchUnit('sqrt', this)">平方根（中3）</button>
         </div>
+    </div>
 
-        <h1 id="page-title">1次関数とみなすこと</h1>
-        <div class="description" id="page-desc"></div>
-
-        <div class="layout-grid">
-            <!-- 左カラム：データ表と予測 -->
-            <div class="left-col">
-                <h3>観測・実験データ</h3>
-                <table id="dynamic-table">
-                    <!-- JSで動的に生成 -->
-                </table>
-
-                <div class="formula-box" id="formula-display">y = ax + b</div>
-
-                <div class="controls" id="controls-container">
-                    <!-- JSで動的に生成 -->
-                </div>
-
-                <div class="prediction-box">
-                    <h3>未知の値を予測する</h3>
-                    <div class="prediction-input">
-                        <span id="predict-label-x">x = </span>
-                        <input type="number" id="predict-x" step="0.1" value="0" oninput="updatePrediction()">
-                        <span id="predict-unit-x"> のとき</span>
-                    </div>
-                    <div class="prediction-result" id="predict-y-calc">
-                        <!-- JSで動的に生成 -->
-                    </div>
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 10px;" id="predict-note"></p>
-                </div>
+    <!-- =============================================== -->
+    <!-- 一次関数 ユニット                                -->
+    <!-- =============================================== -->
+    <div id="unit-linear" class="unit-panel active">
+        <div class="container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('altitude', this)">標高と気温</button>
+                <button class="tab-btn" onclick="switchTab('car', this)">車と距離</button>
+                <button class="tab-btn" onclick="switchTab('candle', this)">線香と長さ</button>
             </div>
 
-            <!-- 右カラム：グラフ -->
-            <div class="right-col">
-                <div class="chart-wrapper">
-                    <canvas id="myChart"></canvas>
+            <h1 id="page-title">1次関数とみなすこと</h1>
+            <div class="description" id="page-desc"></div>
+
+            <div class="layout-grid">
+                <div class="left-col">
+                    <h3>観測・実験データ</h3>
+                    <table id="dynamic-table"></table>
+
+                    <div class="formula-box" id="formula-display">y = ax + b</div>
+
+                    <div class="controls" id="controls-container"></div>
+
+                    <div class="prediction-box">
+                        <h3>未知の値を予測する</h3>
+                        <div class="prediction-input">
+                            <span id="predict-label-x">x = </span>
+                            <input type="number" id="predict-x" step="0.1" value="0" oninput="updatePrediction()">
+                            <span id="predict-unit-x"> のとき</span>
+                        </div>
+                        <div class="prediction-result" id="predict-y-calc"></div>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;" id="predict-note"></p>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="chart-wrapper">
+                        <canvas id="myChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- =============================================== -->
+    <!-- 平方根 ユニット                                  -->
+    <!-- =============================================== -->
+    <div id="unit-sqrt" class="unit-panel sqrt-app">
+        <div class="sqrt-container">
+            <h2 class="sqrt-title">長方形の面積とルートの計算</h2>
+            <p class="subtitle" id="instruction-text">スライダーを動かして、ルートの中の数字（a, b）を変化させよう</p>
+
+            <div class="data-panel">
+                <div class="data-box">
+                    <span class="data-label" style="color: #3b82f6;">横の長さ</span>
+                    <div class="formula" id="form-width">√3 × √1 = √3</div>
+                    <span class="value" id="val-width">1.732...</span>
+                </div>
+                <div class="data-box">
+                    <span class="data-label" style="color: #10b981;">縦の長さ</span>
+                    <div class="formula" id="form-height">√2 × √1 = √2</div>
+                    <span class="value" id="val-height">1.414...</span>
+                </div>
+                <div class="data-box">
+                    <span class="data-label" style="color: #ef4444;">面積 (縦×横)</span>
+                    <div class="formula" id="form-area" style="background:#fee2e2; color:#b91c1c;">√2 × √3 = √6</div>
+                    <span class="value" id="val-area" style="color: #ef4444;">2.449...</span>
+                </div>
+            </div>
+
+            <div class="sliders-wrapper">
+                <div class="slider-box x-axis">
+                    <label for="slider-x" id="label-slider-x" style="color: #1e3a8a;">横：√b 倍する (b = 1)</label>
+                    <input type="range" id="slider-x" min="1" max="3" value="1" step="1">
+                </div>
+                <div class="slider-box y-axis">
+                    <label for="slider-y" id="label-slider-y" style="color: #047857;">縦：√a 倍する (a = 1)</label>
+                    <input type="range" id="slider-y" min="1" max="2" value="1" step="1">
+                </div>
+            </div>
+
+            <div id="result-message">
+                <span id="result-text">🎉 面積が「ピッタリ6」になった！大成功！</span>
+                <button id="unlock-btn">さらに「次の整数」を探すモードを開放！</button>
+            </div>
+
+            <div class="canvas-container">
+                <svg viewBox="-0.5 -0.5 7.5 5.5">
+                    <g stroke="#cbd5e1" stroke-width="0.03" stroke-dasharray="0.1 0.1">
+                        <line x1="1" y1="0" x2="1" y2="5" />
+                        <line x1="2" y1="0" x2="2" y2="5" />
+                        <line x1="3" y1="0" x2="3" y2="5" />
+                        <line x1="4" y1="0" x2="4" y2="5" />
+                        <line x1="5" y1="0" x2="5" y2="5" />
+                        <line x1="6" y1="0" x2="6" y2="5" />
+                        <line x1="0" y1="1" x2="7" y2="1" />
+                        <line x1="0" y1="2" x2="7" y2="2" />
+                        <line x1="0" y1="3" x2="7" y2="3" />
+                        <line x1="0" y1="4" x2="7" y2="4" />
+                    </g>
+                    <line x1="0" y1="0" x2="7" y2="0" stroke="#94a3b8" stroke-width="0.05" />
+                    <line x1="0" y1="0" x2="0" y2="5" stroke="#94a3b8" stroke-width="0.05" />
+
+                    <rect id="base-rect" x="0" y="0" width="1.732" height="1.414" fill="#bfdbfe" stroke="#3b82f6"
+                        stroke-width="0.04" />
+                    <text x="0.866" y="0.707" font-size="0.25" fill="#1e3a8a" text-anchor="middle"
+                        dominant-baseline="middle" font-weight="bold">面積 √6</text>
+
+                    <rect id="dyn-rect" x="0" y="0" width="1.732" height="1.414" fill="#fecaca" fill-opacity="0.5"
+                        stroke="#ef4444" stroke-width="0.06" />
+
+                    <text id="label-width" x="0.866" y="-0.15" font-size="0.25" fill="#ef4444" text-anchor="middle"
+                        font-weight="bold">√3 × √1 = √3</text>
+                    <text id="label-height" x="-0.15" y="0.707" font-size="0.25" fill="#ef4444" text-anchor="middle"
+                        font-weight="bold" transform="rotate(-90, -0.15, 0.707)">√2 × √1 = √2</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 各事象のデータ定義（リアルな誤差を含めた実験値）
+        /* ================================================== */
+        /* === 上部タブ：単元切替                             === */
+        /* ================================================== */
+        function switchUnit(unit, btnElement) {
+            document.querySelectorAll('.outer-tab-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            document.querySelectorAll('.unit-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('unit-' + unit).classList.add('active');
+
+            // 一次関数タブに戻ったとき、Chart.jsのレスポンシブが正しく動くよう再描画
+            if (unit === 'linear' && chartInstance) {
+                chartInstance.resize();
+            }
+        }
+
+        /* ================================================== */
+        /* === 一次関数：シミュレーター                        === */
+        /* ================================================== */
         const scenarios = {
             altitude: {
                 title: "1次関数とみなすこと（標高と気温）",
@@ -348,8 +712,7 @@
 
         function switchTab(mode, btnElement) {
             currentMode = mode;
-            // タブのアクティブ状態変更
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#unit-linear .tab-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
 
             renderUI();
@@ -357,13 +720,11 @@
             handleInput();
         }
 
-        // HTML要素の書き換え
         function renderUI() {
             const s = scenarios[currentMode];
             document.getElementById('page-title').innerText = s.title;
             document.getElementById('page-desc').innerHTML = s.description;
 
-            // 表の生成
             let tableHTML = `<thead><tr>`;
             s.tableHeaders.forEach(th => tableHTML += `<th>${th}</th>`);
             tableHTML += `</tr></thead><tbody>`;
@@ -373,7 +734,6 @@
             tableHTML += `</tbody>`;
             document.getElementById('dynamic-table').innerHTML = tableHTML;
 
-            // スライダーの生成
             let controlsHTML = '';
             for (const [key, param] of Object.entries(s.params)) {
                 controlsHTML += `
@@ -386,7 +746,6 @@
             }
             document.getElementById('controls-container').innerHTML = controlsHTML;
 
-            // 予測エリアのテキスト設定
             document.getElementById('predict-label-x').innerText = s.predict.labelX;
             document.getElementById('predict-unit-x').innerText = s.predict.unitX + " のとき";
             document.getElementById('predict-note').innerText = s.predict.note;
@@ -481,7 +840,6 @@
             document.getElementById('val-a').innerText = a.toFixed(1);
             document.getElementById('val-b').innerText = b.toFixed(1);
 
-            // 符号の処理を整える
             const signB = b < 0 ? '-' : '+';
             const absB = Math.abs(b).toFixed(1);
             document.getElementById('formula-display').innerText = `y = ${a.toFixed(1)}x ${signB} ${absB}`;
@@ -504,30 +862,160 @@
         }
 
         function updatePrediction(a, b) {
+            const sliderA = document.getElementById('slider-a');
+            const sliderB = document.getElementById('slider-b');
+            if (a === undefined) a = parseFloat(sliderA.value);
+            if (b === undefined) b = parseFloat(sliderB.value);
+
             const px = parseFloat(document.getElementById('predict-x').value);
             if (isNaN(px)) return;
 
             const py = a * px + b;
             const s = scenarios[currentMode];
 
-            // 符号の処理を整える
             const signB = b < 0 ? '-' : '+';
             const absB = Math.abs(b).toFixed(1);
 
-            // 計算過程を表示（例: 距離 y = 15.0 × 6.5 + 0.0 ≒ 97.5 cm）
             document.getElementById('predict-y-calc').innerText =
                 `${s.predict.yName} = ${a.toFixed(1)} × ${px} ${signB} ${absB} ≒ ${py.toFixed(1)} ${s.predict.unitY}`;
 
-            // 予測点をグラフに追加
             if (chartInstance) {
                 chartInstance.data.datasets[2].data = [{ x: px, y: py }];
                 chartInstance.update();
             }
         }
 
+        /* ================================================== */
+        /* === 平方根：シミュレーター                          === */
+        /* ================================================== */
+        (function initSqrtApp() {
+            const sliderX = document.getElementById('slider-x');
+            const sliderY = document.getElementById('slider-y');
+            const dynRect = document.getElementById('dyn-rect');
+
+            const formWidth = document.getElementById('form-width');
+            const formHeight = document.getElementById('form-height');
+            const formArea = document.getElementById('form-area');
+
+            const valWidth = document.getElementById('val-width');
+            const valHeight = document.getElementById('val-height');
+            const valArea = document.getElementById('val-area');
+
+            const labelSliderX = document.getElementById('label-slider-x');
+            const labelSliderY = document.getElementById('label-slider-y');
+
+            const labelWidth = document.getElementById('label-width');
+            const labelHeight = document.getElementById('label-height');
+
+            const resultMessage = document.getElementById('result-message');
+            const resultText = document.getElementById('result-text');
+            const unlockBtn = document.getElementById('unlock-btn');
+            const instructionText = document.getElementById('instruction-text');
+
+            let stage2Unlocked = false;
+
+            function isPerfectSquare(n) {
+                return Number.isInteger(Math.sqrt(n));
+            }
+
+            function updateVisualization() {
+                const b = parseInt(sliderX.value);
+                const a = parseInt(sliderY.value);
+
+                const insideW = 3 * b;
+                const insideH = 2 * a;
+                const insideArea = insideW * insideH;
+
+                const currentWidth = Math.sqrt(insideW);
+                const currentHeight = Math.sqrt(insideH);
+                const currentArea = Math.sqrt(insideArea);
+
+                dynRect.setAttribute('width', currentWidth);
+                dynRect.setAttribute('height', currentHeight);
+
+                labelWidth.setAttribute('x', currentWidth / 2);
+                labelHeight.setAttribute('y', currentHeight / 2);
+                labelHeight.setAttribute('transform', `rotate(-90, -0.15, ${currentHeight / 2})`);
+
+                labelSliderX.textContent = `横：√${b} 倍する (b = ${b})`;
+                labelSliderY.textContent = `縦：√${a} 倍する (a = ${a})`;
+
+                formWidth.textContent = `√3 × √${b} = √${insideW}`;
+                labelWidth.textContent = `√3 × √${b} = √${insideW}`;
+
+                formHeight.textContent = `√2 × √${a} = √${insideH}`;
+                labelHeight.textContent = `√2 × √${a} = √${insideH}`;
+
+                formArea.textContent = `√${insideH} × √${insideW} = √${insideArea}`;
+
+                if (isPerfectSquare(insideW)) {
+                    valWidth.textContent = `= ${Math.sqrt(insideW)}`;
+                    valWidth.classList.add('is-int');
+                } else {
+                    valWidth.textContent = `≈ ${currentWidth.toFixed(3)}...`;
+                    valWidth.classList.remove('is-int');
+                }
+
+                if (isPerfectSquare(insideH)) {
+                    valHeight.textContent = `= ${Math.sqrt(insideH)}`;
+                    valHeight.classList.add('is-int');
+                } else {
+                    valHeight.textContent = `≈ ${currentHeight.toFixed(3)}...`;
+                    valHeight.classList.remove('is-int');
+                }
+
+                if (isPerfectSquare(insideArea)) {
+                    valArea.textContent = `= ${Math.sqrt(insideArea)} (ピッタリ整数!)`;
+                    valArea.classList.add('is-int');
+                } else {
+                    valArea.textContent = `≈ ${currentArea.toFixed(3)}...`;
+                    valArea.classList.remove('is-int');
+                }
+
+                resultMessage.className = '';
+                unlockBtn.style.display = 'none';
+
+                if (!stage2Unlocked) {
+                    if (a === 2 && b === 3) {
+                        resultText.innerHTML = "🎉 面積が「ピッタリ 6」になった！大成功！<br>（元の面積 S は √6 だと証明できたね！）";
+                        resultMessage.classList.add('success');
+                        unlockBtn.style.display = 'inline-block';
+                    }
+                } else {
+                    if (isPerfectSquare(insideArea)) {
+                        if (insideArea === 36) {
+                            resultText.innerHTML = "🎯 面積「6」の組み合わせ発見！";
+                            resultMessage.classList.add('success');
+                        } else {
+                            resultText.innerHTML = `🌟 凄すぎる！面積が「ピッタリ ${Math.sqrt(insideArea)}」になる新しい組み合わせを発見！`;
+                            resultMessage.classList.add('super-success');
+                        }
+                    }
+                }
+            }
+
+            unlockBtn.addEventListener('click', () => {
+                stage2Unlocked = true;
+                sliderX.max = 12;
+                sliderY.max = 8;
+
+                instructionText.innerHTML = "<span style='color:#ef4444; font-weight:bold;'>【探索モード】</span> いろんな数字を組み合わせて、次に面積が「整数」になるのを探そう！";
+
+                resultMessage.classList.remove('success');
+                updateVisualization();
+            });
+
+            sliderX.addEventListener('input', updateVisualization);
+            sliderY.addEventListener('input', updateVisualization);
+
+            updateVisualization();
+        })();
+
+        /* ================================================== */
+        /* === 初期化                                          === */
+        /* ================================================== */
         window.onload = () => {
-            // 初期状態は標高タブ
-            const firstTab = document.querySelector('.tab-btn.active');
+            const firstTab = document.querySelector('#unit-linear .tab-btn.active');
             switchTab('altitude', firstTab);
         };
     </script>
