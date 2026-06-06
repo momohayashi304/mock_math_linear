@@ -504,6 +504,10 @@
         }
 
         function updatePrediction(a, b) {
+            // predict-x の oninput から引数なしで呼ばれた時はスライダーから読む
+            if (a === undefined) a = parseFloat(document.getElementById('slider-a').value);
+            if (b === undefined) b = parseFloat(document.getElementById('slider-b').value);
+
             const px = parseFloat(document.getElementById('predict-x').value);
             if (isNaN(px)) return;
 
