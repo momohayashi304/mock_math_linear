@@ -88,4 +88,4 @@ To address the students' current learning profile and achieve the goals above, t
 2. 教員機で [`qr.html`](./qr.html) を開き、プロジェクターで投影。
 3. 生徒は使う単元の QR コード（青：一次関数 ／ 緑：平方根 ／ オレンジ：地形3D）をタブレットで読み取り、直接シミュレーターを開く。
 
-> 公開URL例（GitHub Pages 有効時）: `https://momohayashi304.github.io/mock_math_linear/qr.html`
+> 公開URL例（GitHub Pages 有効時）: `https://momohayashi304.github.io/math-pedagogy-1/qr.html`
