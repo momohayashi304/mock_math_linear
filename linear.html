@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1次関数とみなすこと シミュレーター</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            outline: none;
+            color: #7f8c8d;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #3498db;
+        }
+
+        .tab-btn.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+            margin-bottom: -2px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .layout-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .left-col {
+            flex: 1;
+            min-width: 330px;
+        }
+
+        .right-col {
+            flex: 2;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .formula-box {
+            background: #e8f4f8;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        .controls {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 10px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .control-group label {
+            flex: 1;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .control-group input[type="range"] {
+            flex: 1.5;
+            margin: 0 10px;
+        }
+
+        .control-group span {
+            flex: 0.5;
+            text-align: right;
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+
+        .prediction-box {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+            margin-top: 10px;
+        }
+
+        .prediction-box h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #d35400;
+        }
+
+        .prediction-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .prediction-input input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .prediction-result {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #d35400;
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px dashed #d35400;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            flex-grow: 1;
+            min-height: 400px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('altitude', this)">標高と気温</button>
+            <button class="tab-btn" onclick="switchTab('car', this)">車と距離</button>
+            <button class="tab-btn" onclick="switchTab('candle', this)">線香と長さ</button>
+        </div>
+
+        <h1 id="page-title">1次関数とみなすこと</h1>
+        <div class="description" id="page-desc"></div>
+
+        <div class="layout-grid">
+            <div class="left-col">
+                <h3>観測・実験データ</h3>
+                <table id="dynamic-table"></table>
+
+                <div class="formula-box" id="formula-display">y = ax + b</div>
+
+                <div class="controls" id="controls-container"></div>
+
+                <div class="prediction-box">
+                    <h3>未知の値を予測する</h3>
+                    <div class="prediction-input">
+                        <span id="predict-label-x">x = </span>
+                        <input type="number" id="predict-x" step="0.1" value="0" oninput="updatePrediction()">
+                        <span id="predict-unit-x"> のとき</span>
+                    </div>
+                    <div class="prediction-result" id="predict-y-calc"></div>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 10px;" id="predict-note"></p>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="chart-wrapper">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = {
+            altitude: {
+                title: "1次関数とみなすこと（標高と気温）",
+                description: "富士山周辺の観測所でのデータです。<br>現実のデータは完全に一直線にはなりませんが、おおよそ直線上に並ぶため「1次関数」とみなすことができます。<br>スライダーを動かして、赤い点に最もよく重なる直線を見つけましょう。",
+                tableHeaders: ["観測所", "標高 x (km)", "気温 y (℃)"],
+                obsData: [
+                    { name: '甲府', x: 0.27, y: 22.1 },
+                    { name: '勝沼', x: 0.39, y: 21.4 },
+                    { name: '古関', x: 0.55, y: 20.5 },
+                    { name: '河口湖', x: 0.86, y: 18.7 },
+                    { name: '山中', x: 0.99, y: 17.9 },
+                    { name: '富士山', x: 3.78, y: 1.1 }
+                ],
+                params: {
+                    a: { label: "傾き a (変化の割合)", min: -10, max: 0, step: 0.1, value: -6.0 },
+                    b: { label: "切片 b (標高0kmの気温)", min: 15, max: 30, step: 0.1, value: 23.7 }
+                },
+                predict: {
+                    labelX: "標高 x = ", unitX: " km", yName: "気温 y", unitY: " ℃", defaultX: 2.8,
+                    note: "※七合目の山小屋(2.8km)などの気温を予想してみよう。"
+                },
+                chartOptions: {
+                    xTitle: '標高 x (km)', xMax: 4.0, xStep: 0.5,
+                    yTitle: '気温 y (℃)', yMin: 0, yMax: 25, yStep: 5
+                }
+            },
+            car: {
+                title: "1次関数とみなすこと（おもちゃの車と距離）",
+                description: "一定の速さで走るおもちゃの車の、時間と進んだ距離の実験データです。<br>少しの誤差はありますが、おおよそ直線上に並ぶため「1次関数」とみなせます。<br>切片b（スタート位置）が0に近いことを意識して、直線を合わせてみましょう。",
+                tableHeaders: ["測定点", "時間 x (秒)", "距離 y (cm)"],
+                obsData: [
+                    { name: 'スタート', x: 0, y: 0.0 },
+                    { name: '1秒後', x: 1, y: 15.2 },
+                    { name: '2秒後', x: 2, y: 29.8 },
+                    { name: '3秒後', x: 3, y: 45.1 },
+                    { name: '4秒後', x: 4, y: 60.3 },
+                    { name: '5秒後', x: 5, y: 74.8 }
+                ],
+                params: {
+                    a: { label: "傾き a (速さ cm/秒)", min: 10, max: 20, step: 0.1, value: 15.0 },
+                    b: { label: "切片 b (初期位置 cm)", min: -5, max: 5, step: 0.1, value: 0.0 }
+                },
+                predict: {
+                    labelX: "時間 x = ", unitX: " 秒", yName: "距離 y", unitY: " cm", defaultX: 6.5,
+                    note: "※6.5秒後にどこまで進むかを予想してみよう。"
+                },
+                chartOptions: {
+                    xTitle: '時間 x (秒)', xMax: 8.0, xStep: 1,
+                    yTitle: '距離 y (cm)', yMin: 0, yMax: 120, yStep: 20
+                }
+            },
+            candle: {
+                title: "1次関数とみなすこと（線香の燃える時間と長さ）",
+                description: "火をつけた線香が燃える時間とその長さの実験データです。<br>燃えるにつれて一定の割合で短くなるため、これも「1次関数」とみなすことができます。<br>切片が「最初の長さ」、傾きが「1分間に燃える長さ」を表すことに注目しましょう。",
+                tableHeaders: ["測定点", "時間 x (分)", "長さ y (cm)"],
+                obsData: [
+                    { name: '火をつける前', x: 0, y: 14.0 },
+                    { name: '2分後', x: 2, y: 13.0 },
+                    { name: '4分後', x: 4, y: 12.1 },
+                    { name: '6分後', x: 6, y: 10.9 },
+                    { name: '8分後', x: 8, y: 10.1 },
+                    { name: '10分後', x: 10, y: 9.0 }
+                ],
+                params: {
+                    a: { label: "傾き a (燃える速さ cm/分)", min: -1.0, max: 0.0, step: 0.05, value: -0.5 },
+                    b: { label: "切片 b (最初の長さ cm)", min: 10, max: 20, step: 0.1, value: 14.0 }
+                },
+                predict: {
+                    labelX: "時間 x = ", unitX: " 分", yName: "長さ y", unitY: " cm", defaultX: 15,
+                    note: "※15分後の線香の長さを予想してみよう。"
+                },
+                chartOptions: {
+                    xTitle: '時間 x (分)', xMax: 20, xStep: 2,
+                    yTitle: '長さ y (cm)', yMin: 0, yMax: 16, yStep: 2
+                }
+            }
+        };
+
+        let currentMode = 'altitude';
+        let chartInstance = null;
+
+        function switchTab(mode, btnElement) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            renderUI();
+            initChart();
+            handleInput();
+        }
+
+        function renderUI() {
+            const s = scenarios[currentMode];
+            document.getElementById('page-title').innerText = s.title;
+            document.getElementById('page-desc').innerHTML = s.description;
+
+            let tableHTML = `<thead><tr>`;
+            s.tableHeaders.forEach(th => tableHTML += `<th>${th}</th>`);
+            tableHTML += `</tr></thead><tbody>`;
+            s.obsData.forEach(row => {
+                tableHTML += `<tr><td>${row.name}</td><td>${row.x}</td><td>${row.y.toFixed(1)}</td></tr>`;
+            });
+            tableHTML += `</tbody>`;
+            document.getElementById('dynamic-table').innerHTML = tableHTML;
+
+            let controlsHTML = '';
+            for (const [key, param] of Object.entries(s.params)) {
+                controlsHTML += `
+                    <div class="control-group">
+                        <label>${param.label}</label>
+                        <input type="range" id="slider-${key}" min="${param.min}" max="${param.max}" step="${param.step}" value="${param.value}" oninput="handleInput()">
+                        <span id="val-${key}">${param.value.toFixed(1)}</span>
+                    </div>
+                `;
+            }
+            document.getElementById('controls-container').innerHTML = controlsHTML;
+
+            document.getElementById('predict-label-x').innerText = s.predict.labelX;
+            document.getElementById('predict-unit-x').innerText = s.predict.unitX + " のとき";
+            document.getElementById('predict-note').innerText = s.predict.note;
+            document.getElementById('predict-x').value = s.predict.defaultX;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const s = scenarios[currentMode];
+            const scatterData = s.obsData.map(d => ({ x: d.x, y: d.y }));
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: '観測・実験データ',
+                            data: scatterData,
+                            backgroundColor: 'red',
+                            borderColor: 'black',
+                            borderWidth: 1,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            order: 2
+                        },
+                        {
+                            label: 'みなした1次関数',
+                            data: [],
+                            type: 'line',
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false,
+                            order: 1
+                        },
+                        {
+                            label: '予測地点',
+                            data: [],
+                            backgroundColor: '#f39c12',
+                            borderColor: '#e67e22',
+                            borderWidth: 2,
+                            pointRadius: 9,
+                            pointStyle: 'star',
+                            order: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 0 },
+                    scales: {
+                        x: {
+                            title: { display: true, text: s.chartOptions.xTitle, font: { size: 14 } },
+                            min: 0,
+                            max: s.chartOptions.xMax,
+                            ticks: { stepSize: s.chartOptions.xStep }
+                        },
+                        y: {
+                            title: { display: true, text: s.chartOptions.yTitle, font: { size: 14 } },
+                            min: s.chartOptions.yMin,
+                            max: s.chartOptions.yMax,
+                            ticks: { stepSize: s.chartOptions.yStep }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    if (context.datasetIndex === 0) {
+                                        const index = context.dataIndex;
+                                        return `${s.obsData[index].name}: (${context.parsed.x}, ${context.parsed.y})`;
+                                    }
+                                    return `(${context.parsed.x}, ${context.parsed.y})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function handleInput() {
+            const a = parseFloat(document.getElementById('slider-a').value);
+            const b = parseFloat(document.getElementById('slider-b').value);
+
+            document.getElementById('val-a').innerText = a.toFixed(1);
+            document.getElementById('val-b').innerText = b.toFixed(1);
+
+            const signB = b < 0 ? '-' : '+';
+            const absB = Math.abs(b).toFixed(1);
+            document.getElementById('formula-display').innerText = `y = ${a.toFixed(1)}x ${signB} ${absB}`;
+
+            updateChartLine(a, b);
+            updatePrediction(a, b);
+        }
+
+        function updateChartLine(a, b) {
+            if (!chartInstance) return;
+            const xMax = scenarios[currentMode].chartOptions.xMax;
+
+            const lineData = [
+                { x: 0, y: b },
+                { x: xMax, y: a * xMax + b }
+            ];
+
+            chartInstance.data.datasets[1].data = lineData;
+            chartInstance.update();
+        }
+
+        function updatePrediction(a, b) {
+            if (a === undefined) a = parseFloat(document.getElementById('slider-a').value);
+            if (b === undefined) b = parseFloat(document.getElementById('slider-b').value);
+
+            const px = parseFloat(document.getElementById('predict-x').value);
+            if (isNaN(px)) return;
+
+            const py = a * px + b;
+            const s = scenarios[currentMode];
+
+            const signB = b < 0 ? '-' : '+';
+            const absB = Math.abs(b).toFixed(1);
+
+            document.getElementById('predict-y-calc').innerText =
+                `${s.predict.yName} = ${a.toFixed(1)} × ${px} ${signB} ${absB} ≒ ${py.toFixed(1)} ${s.predict.unitY}`;
+
+            if (chartInstance) {
+                chartInstance.data.datasets[2].data = [{ x: px, y: py }];
+                chartInstance.update();
+            }
+        }
+
+        window.onload = () => {
+            const firstTab = document.querySelector('.tab-btn.active');
+            switchTab('altitude', firstTab);
+        };
+    </script>
+</body>
+
+</html>

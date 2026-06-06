@@ -9,6 +9,16 @@ Open [`lesson.html`](./lesson.html) and use the **top tabs** to switch between t
 | 一次関数（中2） | Linear Functions — *regarding relationships as linear functions* | Junior High School 2nd Year |
 | 平方根（中3） | Square Roots — *multiplication of expressions containing radicals* | Junior High School 3rd Year |
 
+### Standalone pages & QR codes
+
+Each unit also has a standalone page so students can scan a QR code on a tablet/phone and jump directly into the simulator without the tab switcher:
+
+- [`linear.html`](./linear.html) — 一次関数 simulator only (standalone)
+- [`sqrt.html`](./sqrt.html) — 平方根 simulator only (standalone)
+- [`qr.html`](./qr.html) — displays **two QR codes**, one for `linear.html` and one for `sqrt.html`, generated client-side from the page's own URL. Open this on the projector/teacher screen; students scan whichever QR matches the unit they need.
+
+> The QR codes are generated dynamically from `window.location`, so they automatically point at the correct host (e.g. GitHub Pages, local file, intranet server) wherever `qr.html` is served from.
+
 ---
 
 ## Unit 1: Linear Functions (一次関数)
@@ -78,5 +88,8 @@ Based on the Japanese Course of Study, this lesson focuses on the following eval
 ## Files
 
 - `lesson.html` — combined interactive simulator (top tabs: 一次関数 / 平方根)
+- `linear.html` — standalone 一次関数 simulator (QR code target)
+- `sqrt.html` — standalone 平方根 simulator (QR code target)
+- `qr.html` — QR code landing page with one QR per unit
 - `index.html`, `index2.html` — 3D map visualisations of Mt. Fuji observation stations (used in the 一次関数 lesson)
 - `README.md` — this file
